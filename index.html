@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PatiMatch Anolaima - Sistema Completo</title>
+    
+    <!-- ESTILOS CSS -->
+    <style>
+        :root {
+            --morado-oscuro: #4b0082;
+            --morado-medio: #7b2cbf;
+            --morado-claro: #cdb4db;
+            --morado-pastel: #e0aaff;
+            --fondo: #f5f3ff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--fondo);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* BOTÓN HISTORIAL (Superior Izquierda) */
+        .header-herramientas {
+            max-width: 900px;
+            margin: 0 auto 15px auto;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .btn-historial {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .btn-historial:hover {
+            background-color: #495057;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .seccion {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        h1, h2 {
+            color: var(--morado-oscuro);
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .contador {
+            text-align: center;
+            background: var(--morado-pastel);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: var(--morado-oscuro);
+        }
+
+        .grid-formulario {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-formulario { grid-template-columns: 1fr; }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+        @media (max-width: 600px) {
+            .full-width { grid-column: span 1; }
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--morado-oscuro);
+            font-size: 14px;
+        }
+
+        input[type="text"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--morado-claro);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input[type="text"]:focus, select:focus, textarea:focus {
+            border-color: var(--morado-medio);
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--morado-medio);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover { background-color: var(--morado-oscuro); }
+        
+        button.cancelar {
+            background-color: #6c757d;
+            margin-top: 10px;
+        }
+        button.cancelar:hover { background-color: #5a6268; }
+
+        /* BUSCADOR */
+        .buscador-container {
+            margin-bottom: 20px;
+        }
+
+        /* TARJETAS DE MASCOTAS */
+        .grid-tarjetas {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--morado-claro);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #e9ecef;
+        }
+
+        .card-body {
+            padding: 15px;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--morado-oscuro);
+            margin: 0 0 10px 0;
+        }
+
+        .card-info {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .card-info strong { color: var(--morado-medio); }
+
+        .estado-alerta {
+            background: #fff0f0;
+            color: #d90429;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 5px;
+            border: 1px solid #ffccd5;
+        }
+
+        .card-botones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-editar {
+            background-color: #ffb703;
+            color: #212529;
+            padding: 8px;
+            font-size: 14px;
+        }
+        .btn-editar:hover { background-color: #fb8500; }
+
+        .btn-eliminar {
+            background-color: #e63946;
+            padding: 8px;
+            font-size: 14px;
+        }
+        .btn-eliminar:hover { background-color: #d90429; }
+
+        /* VENTANA MODAL (HISTORIAL FLOTANTE) */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.5); 
+        }
+
+        .modal-contenido {
+            background-color: white;
+            margin: 10% auto; 
+            padding: 20px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .cerrar-modal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .cerrar-modal:hover { color: black; }
+
+        .item-eliminado {
+            border-bottom: 1px dashed var(--morado-claro);
+            padding: 10px 0;
+        }
+        .item-eliminado:last-child { border: none; }
+    </style>
+</head>
+<body>
+
+    <!-- BOTÓN DE HISTORIAL EN LA PARTE SUPERIOR IZQUIERDA -->
+    <div class="header-herramientas">
+        <button class="btn-historial" id="btnAbrirHistorial">📋 Ver Historial Eliminados (<span id="cuentaEliminados">0</span>)</button>
+    </div>
+
+    <div class="container">
+        <h1>🐾 PatiMatch Anolaima</h1>
+        
+        <!-- SECCIÓN 1: CONTADOR Y FORMULARIO -->
+        <div class="seccion">
+            <div class="contador">
+                Reportes registrados en total: <span id="totalReportes">0</span>
+            </div>
+
+            <h2 id="tituloFormulario">Registrar Nuevo Reporte</h2>
+            <form id="formReporte">
+                <input type="hidden" id="reporteId">
+
+                <div class="grid-formulario">
+                    <div class="form-group">
+                        <label for="foto">Enlace (URL) de la foto:</label>
+                        <input type="text" id="foto" placeholder="https://ejemplo.com/foto.jpg" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nombre">Nombre del animal:</label>
+                        <input type="text" id="nombre" placeholder="Ej. Firulais (o 'Desconocido')">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="especie">Especie:</label>
+                        <select id="especie" required>
+                            <option value="">Seleccione...</option>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="raza">Raza / Tipo:</label>
+                        <input type="text" id="raza" placeholder="Ej. Criollo, Mestizo" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edad">Edad aproximada:</label>
+                        <input type="text" id="edad" placeholder="Ej. 1 año, Cachorro" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estado">Situación / Maltrato:</label>
+                        <select id="estado" required>
+                            <option value="">Seleccione...</option>
+                            <option value="Sin comida o agua">Sin comida o agua</option>
+                            <option value="Herido o enfermo">Herido o enfermo</option>
+                            <option value="Expuesto al clima">Expuesto al clima</option>
+                            <option value="Encadenado o enjaulado">Encadenado o enjaulado</option>
+                            <option value="Deambulando en la calle">Deambulando en la calle</option>
+                            <option value="Maltrato evidente">Maltrato evidente</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ubicacion">Ubicación (Barrio/Vereda en Anolaima):</label>
+                        <input type="text" id="ubicacion" placeholder="Ej. Vereda Santa Bárbara" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fecha">Fecha del reporte:</label>
+                        <input type="date" id="fecha" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="descripcion">Descripción adicional:</label>
+                        <textarea id="descripcion" rows="3" placeholder="Detalles de la emergencia..."></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" id="btnGuardar">Guardar Reporte</button>
+                <button type="button" id="btnCancelar" class="cancelar" style="display: none;">Cancelar Edición</button>
+            </form>
+        </div>
+
+        <!-- SECCIÓN 2: BUSCADOR Y LISTADO -->
+        <div class="seccion">
+            <h2>Casos Reportados</h2>
+            
+            <div class="buscador-container">
+                <input type="text" id="buscador" placeholder="🔍 Buscar mascota por su nombre...">
+            </div>
+
+            <div class="grid-tarjetas" id="contenedorTarjetas"></div>
+        </div>
+    </div>
+
+    <!-- VENTANA FLOTANTE (MODAL) PARA EL HISTORIAL -->
+    <div id="modalHistorial" class="modal">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" id="btnCerrarHistorial">&times;</span>
+            <h2 style="color: #e63946; text-align: left; margin-bottom: 15px;">📋 Reportes Eliminados</h2>
+            <div id="listaEliminados">
+                <p style="color: #666;">No has eliminado ningún reporte en esta sesión.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIGURACIÓN Y LÓGICA DE FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAs78D9F-ExampleKeyForPatiMatch",
+            authDomain: "patimatch-anolaima.firebaseapp.com",
+            projectId: "patimatch-anolaima",
+            storageBucket: "patimatch-anolaima.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef123456"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const reportesRef = collection(db, "animales_abandonados");
+
+        let todosLosReportes = [];
+        // Lista en memoria para guardar el historial de eliminados de la sesión
+        let historialEliminados = [];
+
+        // --- ESCUCHAR LA BASE DE DATOS ---
+        onSnapshot(reportesRef, (snapshot) => {
+            todosLosReportes = [];
+            document.getElementById("totalReportes").innerText = snapshot.size;
+
+            snapshot.forEach((doc) => {
+                todosLosReportes.push({ id: doc.id, ...doc.data() });
+            });
+
+            renderizarTarjetas(todosLosReportes);
+        });
+
+        // --- RENDERIZAR TARJETAS ---
+        function renderizarTarjetas(lista) {
+            const contenedor = document.getElementById("contenedorTarjetas");
+            contenedor.innerHTML = "";
+
+            if(lista.length === 0) {
+                contenedor.innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>No se encontraron reportes.</p>";
+                return;
+            }
+
+            lista.forEach((animal) => {
+                const tarjeta = document.createElement("div");
+                tarjeta.className = "card";
+                tarjeta.innerHTML = `
+                    <img src="${animal.foto}" alt="Foto de ${animal.nombre}" onerror="this.src='https://placehold.co/400x300?text=Sin+Foto'">
+                    <div class="card-body">
+                        <p class="card-title">${animal.nombre || 'Sin nombre'}</p>
+                        <p class="card-info"><strong>Especie:</strong> ${animal.especie}</p>
+                        <p class="card-info"><strong>Raza:</strong> ${animal.raza}</p>
+                        <p class="card-info"><strong>Edad:</strong> ${animal.edad}</p>
+                        <p class="card-info"><strong>Ubicación:</strong> ${animal.ubicacion}</p>
+                        <p class="card-info"><strong>Fecha:</strong> ${animal.fecha}</p>
+                        <p class="card-info"><strong>Descripción:</strong> ${animal.descripcion || 'Sin descripción'}</p>
+                        <div class="estado-alerta">⚠️ ${animal.estado}</div>
+                    </div>
+                    <div class="card-botones">
+                        <button class="btn-editar" data-id="${animal.id}">Editar</button>
+                        <button class="btn-eliminar" data-id="${animal.id}">Eliminar</button>
+                    </div>
+                `;
+                contenedor.appendChild(tarjeta);
+            });
+
+            asignarEventosBotones();
+        }
+
+        // --- BUSCADOR POR NOMBRE ---
+        document.getElementById("buscador").addEventListener("input", (e) => {
+            const textoBusqueda = e.target.value.toLowerCase();
+            const filtrados = todosLosReportes.filter(animal => 
+                (animal.nombre || "").toLowerCase().includes(textoBusqueda)
+            );
+            renderizarTarjetas(filtrados);
+        });
+
+        // --- GUARDAR O EDITAR ---
+        document.getElementById("formReporte").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const id = document.getElementById("reporteId").value;
+            
+            const datosReporte = {
+                foto: document.getElementById("foto").value,
+                nombre: document.getElementById("nombre").value || "Sin nombre",
+                especie: document.getElementById("especie").value,
+                raza: document.getElementById("raza").value,
+                edad: document.getElementById("edad").value,
+                estado: document.getElementById("estado").value,
+                ubicacion: document.getElementById("ubicacion").value,
+                fecha: document.getElementById("fecha").value,
+                descripcion: document.getElementById("descripcion").value
+            };
+
+            try {
+                if (id === "") {
+                    await addDoc(reportesRef, datosReporte);
+                    alert("¡Reporte agregado con éxito!");
+                } else {
+                    await updateDoc(doc(db, "animales_abandonados", id), datosReporte);
+                    alert("¡Reporte actualizado con éxito!");
+                    cancelarEdicion();
+                }
+                document.getElementById("formReporte").reset();
+            } catch (error) {
+                alert("Hubo un error al procesar.");
+            }
+        });
+
+        // --- BOTONES DINÁMICOS (EDITAR Y ELIMINAR) ---
+        function asignarEventosBotones() {
+            // Eliminar
+            document.querySelectorAll(".btn-eliminar").forEach(boton => {
+                boton.addEventListener("click", async (e) => {
+                    const id = e.target.dataset.id;
+                    const animalAElminar = todosLosReportes.find(a => a.id === id);
+
+                    if(confirm(`¿Seguro que deseas eliminar el reporte de ${animalAElminar.nombre}?`)) {
+                        try {
+                            // 1. Guardamos una copia en el historial local antes de borrar de Firebase
+                            historialEliminados.push({
+                                nombre: animalAElminar.nombre,
+                                especie: animalAElminar.especie,
+                                estado: animalAElminar.estado,
+                                fechaEliminado: new Date().toLocaleTimeString()
+                            });
+                            
+                            // Actualizar contador visual del botón del historial
+                            document.getElementById("cuentaEliminados").innerText = historialEliminados.length;
+                            actualizarVistaHistorial();
+
+                            // 2. Eliminamos de Firebase
+                            await deleteDoc(doc(db, "animales_abandonados", id));
+                            alert("Reporte eliminado de la base de datos.");
+                        } catch (error) {
+                            alert("No se pudo eliminar.");
+                        }
+                    }
+                });
+            });
+
+            // Editar
+            document.querySelectorAll(".btn-editar").forEach(boton => {
+                boton.addEventListener("click", (e) => {
+                    const id = e.target.dataset.id;
+                    const animal = todosLosReportes.find(a => a.id === id);
+
+                    if(animal) {
+                        document.getElementById("reporteId").value = animal.id;
+                        document.getElementById("foto").value = animal.foto;
+                        document.getElementById("nombre").value = animal.nombre;
+                        document.getElementById("especie").value = animal.especie;
+                        document.getElementById("raza").value = animal.raza;
+                        document.getElementById("edad").value = animal.edad;
+                        document.getElementById("estado").value = animal.estado;
+                        document.getElementById("ubicacion").value = animal.ubicacion;
+                        document.getElementById("fecha").value = animal.fecha;
+                        document.getElementById("descripcion").value = animal.descripcion;
+
+                        document.getElementById("tituloFormulario").innerText = "✏️ Modificando Reporte";
+                        document.getElementById("btnGuardar").innerText = "Guardar Cambios Actualizados";
+                        document.getElementById("btnCancelar").style.display = "block";
+                        window.scrollTo({top: 0, behavior: 'smooth'});
+                    }
+                });
+            });
+        }
+
+        // --- ACTUALIZAR LA LISTA DEL HISTORIAL MODAL ---
+        function actualizarVistaHistorial() {
+            const contenedorHistorial = document.getElementById("listaEliminados");
+            contenedorHistorial.innerHTML = "";
+
+            historialEliminados.forEach(animal => {
+                const item = document.createElement("div");
+                item.className = "item-eliminado";
+                item.innerHTML = `
+                    <p style="margin: 5px 0;"><strong>🐾 Mascota:</strong> ${animal.nombre} (${animal.especie})</p>
+                    <p style="margin: 5px 0; font-size:13px; color:#666;"><strong>Caso:</strong> ${animal.estado} | <strong>Hora borrado:</strong> ${animal.fechaEliminado}</p>
+                `;
+                contenedorHistorial.appendChild(item);
+            });
+        }
+
+        // --- CONTROL DE LA VENTANA FLOTANTE (MODAL) ---
+        const modal = document.getElementById("modalHistorial");
+        
+        document.getElementById("btnAbrirHistorial").addEventListener("click", () => {
+            modal.style.display = "block";
+        });
+
+        document.getElementById("btnCerrarHistorial").addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+
+        // Cerrar si hacen clic fuera de la ventana blanca
+        window.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+
+        // --- CANCELAR EDICIÓN ---
+        document.getElementById("btnCancelar").addEventListener("click", cancelarEdicion);
+
+        function cancelarEdicion() {
+            document.getElementById("formReporte").reset();
+            document.getElementById("reporteId").value = "";
+            document.getElementById("tituloFormulario").innerText = "Registrar Nuevo Reporte";
+            document.getElementById("btnGuardar").innerText = "Guardar Reporte";
+            document.getElementById("btnCancelar").style.display = "none";
+        }
+    </script>
+</body>
+</html>
